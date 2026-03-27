@@ -8,17 +8,27 @@ resource "aws_instance" "myserver" {
     instance_type = "t3.micro"
 }
 
-resource "security_group_id" "new terraform" {
-    ingress{
+resource "aws_security_group" "new_terraform" {
+    egress{
         from_port = 22
         to_port = 22
         protocol = "tcp"
     }
+
+    ingress{
+        from_port = 80
+        to_port = 80
+        protocol = "http"
+
+    }
+}
+
+# creating r53 record by own
+resource "aws_route53_record" "rakesh" {
+    zone_id = "Z03367111M5B9ONUM8AIS"
+    name = "test_your_domain"
+    type = "A"
+    ttl = 300
+    records = [aws_instance.myserver.public_ip]
   
-   ingress{
-    for_port = 80
-    to_port = 80
-    protocol = "http"
-    
-   }
 }
